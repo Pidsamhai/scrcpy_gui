@@ -1,11 +1,11 @@
-﻿Imports System.Threading
-Public Class Form1
+﻿Public Class Form1
 
     Dim drag As Boolean
     Dim mousex As Integer
     Dim mousey As Integer
     Dim Process As New Process()
     Dim Process_Info As New ProcessStartInfo()
+    Dim path As String = "scrcpy-win64"
 
     Private Sub Top_pa_Paint(sender As Object, e As PaintEventArgs) Handles top_pa.Paint
 
@@ -29,6 +29,7 @@ Public Class Form1
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        kill_process()
         Me.Close()
     End Sub
 
@@ -37,9 +38,10 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        VersionLabel.Text = "Alpha Build 0.1 03/08/2019"
+
+        VersionLabel.Text = "Alpha Build 0.2 04/08/2019"
         cmbBitrate.SelectedIndex = 0
-        m_USB.Checked = True
+        m_USB.Checked = False
         dgvShortCuts.Columns(0).Width = 388 / 1.4
         dgvShortCuts.Columns(1).Width = 388 / 2
         dgvShortCuts.RowTemplate.Height = 30
@@ -96,50 +98,49 @@ Public Class Form1
                 If (chkCrop.Checked) Then
                     If (cmbCrop.SelectedIndex > -1) Then
                         Dim res As String() = cmbCrop.Text.Split("x")
-
-                        'MessageBox.Show(res.Length.ToString + res(0))
                         msg += "-c " + res(0) + ":" + res(1) + ":0:0" + " "
                     Else
-                        MessageBox.Show("Please select Crop resolution")
+                        MessageBox.Show("Please select Crop resolution", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Return
                     End If
 
                 End If
                 If (Not m_USB.Checked And Not m_Wireless.Checked) Then
-                    msg = "Error Please Select Mode"
-                    MessageBox.Show(msg)
+                    msg = "Please Select Mode"
+                    MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Return
                 End If
 
                 If (cmbBitrate.SelectedIndex > -1) Then
                     msg += "-b " + cmbBitrate.Text.TrimEnd("B")
                 End If
-                MessageBox.Show(msg)
+                'MessageBox.Show(msg)
                 If (m_USB.Checked) Then
-                    lblStat.Text = "Connect " + str(0)
-                    btnConnect.Text = "Disconnect"
-                    btnConnect.BackColor = Color.FromArgb(255, 128, 128)
-                    btnConnect.ForeColor = Color.FromArgb(255, 0, 0)
-                    btnConnect.FlatAppearance.BorderColor = Color.FromArgb(255, 0, 0)
-
-                    grpbHome.Enabled = False
-
-                    Process_Info.FileName = "cmd.exe"
-                    Process_Info.Arguments = msg
-                    Process_Info.WorkingDirectory = "scrcpy-win64"
-                    Process_Info.CreateNoWindow = True
-                    Process_Info.UseShellExecute = False
-                    Process_Info.RedirectStandardOutput = True
-                    Process_Info.RedirectStandardError = True
-                    Process.EnableRaisingEvents = True
-                    Process.StartInfo = Process_Info
-                    Process.Start()
-
+                    adb("/c adb usb")
+                    adb("/c adb kill-server")
                 ElseIf (m_Wireless.Checked) Then
-                    MessageBox.Show(adb("/c adb tcpip 5555"))
+                    adb("/c adb kill-server")
+                    Dim ip As String = getIP()
+                    adb("/c adb tcpip 5555")
+                    MessageBox.Show(adb("/c adb connect " & ip & ":5555") + vbCrLf + "Please Unplug USB then press OK", "Please Unplug USB", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 End If
+                Process_Info.FileName = "cmd.exe"
+                Process_Info.Arguments = msg
+                Process_Info.WorkingDirectory = path
+                Process_Info.CreateNoWindow = True
+                Process_Info.UseShellExecute = False
+                Process_Info.RedirectStandardOutput = True
+                Process_Info.RedirectStandardError = True
+                Process.EnableRaisingEvents = True
+                Process.StartInfo = Process_Info
+                Process.Start()
 
-
+                grpbHome.Enabled = False
+                lblStat.Text = "Connect " + str(0)
+                btnConnect.Text = "Disconnect"
+                btnConnect.BackColor = Color.FromArgb(255, 128, 128)
+                btnConnect.ForeColor = Color.FromArgb(255, 0, 0)
+                btnConnect.FlatAppearance.BorderColor = Color.FromArgb(255, 0, 0)
 
             Else
                 btnConnect.Text = "Connect"
@@ -147,45 +148,46 @@ Public Class Form1
                 btnConnect.ForeColor = Color.FromArgb(0, 192, 0)
                 btnConnect.FlatAppearance.BorderColor = Color.FromArgb(0, 192, 0)
                 grpbHome.Enabled = True
-                Process.Close()
-
-                For Each p As Process In Process.GetProcesses
-                    If p.ProcessName = "scrcpy" Or p.ProcessName = "adb" Then
-                        Try
-                            p.Kill()
-                        Catch ex As Exception
-                            Continue For
-                        End Try
-                    End If
-                Next
+                kill_process()
                 lblStat.Text = ""
             End If
 
         Else
-            MessageBox.Show("No Devices Connected !")
+            MessageBox.Show("No Devices Connected !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 
-    Function adb(ByVal Arguments As String) As String
+    Function Kill_process()
+        Process.Close()
+        For Each p As Process In Process.GetProcesses
+            If p.ProcessName = "scrcpy" Or p.ProcessName = "adb" Then
+                Try
+                    p.Kill()
+                Catch ex As Exception
+                    Continue For
+                End Try
+            End If
+        Next
+    End Function
+
+
+    Function Adb(ByVal Arguments As String) As String
         Try
 
-            Dim My_Process As New Process()
-            Dim My_Process_Info As New ProcessStartInfo()
+            Process_Info.FileName = "cmd.exe"
+            Process_Info.Arguments = Arguments
+            Process_Info.WorkingDirectory = path
+            Process_Info.CreateNoWindow = True
+            Process_Info.UseShellExecute = False
+            Process_Info.RedirectStandardOutput = True
+            Process_Info.RedirectStandardError = True
 
-            My_Process_Info.FileName = "cmd.exe"
-            My_Process_Info.Arguments = Arguments
-            My_Process_Info.WorkingDirectory = "C:\Users\mengx\Desktop\scrcpy-win64"
-            My_Process_Info.CreateNoWindow = True
-            My_Process_Info.UseShellExecute = False
-            My_Process_Info.RedirectStandardOutput = True
-            My_Process_Info.RedirectStandardError = True
+            Process.EnableRaisingEvents = True
+            Process.StartInfo = Process_Info
+            Process.Start()
 
-            My_Process.EnableRaisingEvents = True
-            My_Process.StartInfo = My_Process_Info
-            My_Process.Start()
-
-            Dim Process_ErrorOutput As String = My_Process.StandardOutput.ReadToEnd()
-            Dim Process_StandardOutput As String = My_Process.StandardOutput.ReadToEnd()
+            Dim Process_ErrorOutput As String = Process.StandardOutput.ReadToEnd()
+            Dim Process_StandardOutput As String = Process.StandardOutput.ReadToEnd()
 
             If Process_ErrorOutput IsNot Nothing Then Return Process_ErrorOutput
             If Process_StandardOutput IsNot Nothing Then Return Process_StandardOutput
@@ -197,10 +199,16 @@ Public Class Form1
 
     End Function
 
-    Function getIP()
-        Dim msg As String() = adb("/c adb shell ip route").Split(vbLf)
+    Function GetIP()
+        Dim msg As String() = Adb("/c adb shell ip route").Split(vbLf)
         Dim ip_dummy As String() = msg(0).Split(" ")
         Dim ip As String = ip_dummy(ip_dummy.Length - 2)
+        Dim a As String
+        For Each i In ip_dummy
+            a += "->" + i + vbCrLf
+        Next
+        'MessageBox.Show(ip)
+        'Dim ip As String = ip_dummy(8)
         Return ip
     End Function
 
@@ -239,17 +247,27 @@ Public Class Form1
     End Sub
 
     Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
-        Process.Close()
-
-        For Each p As Process In Process.GetProcesses
-            If p.ProcessName = "scrcpy" Or p.ProcessName = "adb" Then
-                Try
-                    p.Kill()
-                Catch ex As Exception
-                    Continue For
-                End Try
-            End If
-        Next
+        kill_process()
         Me.Close()
+    End Sub
+
+    Private Sub BtnKill_Click(sender As Object, e As EventArgs) Handles btnKill.Click
+        kill_process()
+    End Sub
+
+    Private Sub Lblsource_Click(sender As Object, e As EventArgs) Handles Lblsource.Click
+        Process.Start("https://github.com/Genymobile/scrcpy")
+    End Sub
+
+    Private Sub Lblmygit_Click(sender As Object, e As EventArgs) Handles Lblmygit.Click
+        Process.Start("https://github.com/Pidsamhai")
+    End Sub
+
+    Private Sub PictureBox4_Click(sender As Object, e As EventArgs) Handles PictureBox4.Click
+        Process.Start("https://github.com/Pidsamhai")
+    End Sub
+
+    Private Sub MaterialLabel1_Click(sender As Object, e As EventArgs) Handles MaterialLabel1.Click
+        Process.Start("https://facebook.com/meng.anantasak")
     End Sub
 End Class

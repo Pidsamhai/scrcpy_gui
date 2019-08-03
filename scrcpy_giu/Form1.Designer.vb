@@ -23,7 +23,7 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         Me.top_pa = New System.Windows.Forms.Panel()
         Me.btnMinimize = New System.Windows.Forms.Button()
@@ -48,12 +48,17 @@ Partial Class Form1
         Me.Column1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.About = New MetroFramework.Controls.MetroTabPage()
-        Me.PictureBox3 = New System.Windows.Forms.PictureBox()
-        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Scrcpy = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.ctxTray = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnKill = New System.Windows.Forms.Button()
+        Me.PictureBox4 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox3 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.Lblsource = New MaterialSkin.Controls.MaterialLabel()
+        Me.Lblmygit = New MaterialSkin.Controls.MaterialLabel()
+        Me.MaterialLabel1 = New MaterialSkin.Controls.MaterialLabel()
         Me.top_pa.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.grpbHome.SuspendLayout()
@@ -62,10 +67,11 @@ Partial Class Form1
         Me.Howto.SuspendLayout()
         CType(Me.dgvShortCuts, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.About.SuspendLayout()
+        Me.ctxTray.SuspendLayout()
+        CType(Me.PictureBox4, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.ctxTray.SuspendLayout()
         Me.SuspendLayout()
         '
         'top_pa
@@ -139,7 +145,7 @@ Partial Class Form1
         '
         Me.chkScreen_Off.AutoSize = True
         Me.chkScreen_Off.Depth = 0
-        Me.chkScreen_Off.Font = New System.Drawing.Font("Roboto", 10.0!)
+        Me.chkScreen_Off.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!)
         Me.chkScreen_Off.Location = New System.Drawing.Point(153, 85)
         Me.chkScreen_Off.Margin = New System.Windows.Forms.Padding(0)
         Me.chkScreen_Off.MouseLocation = New System.Drawing.Point(-1, -1)
@@ -155,8 +161,7 @@ Partial Class Form1
         '
         Me.m_Wireless.AutoSize = True
         Me.m_Wireless.Depth = 0
-        Me.m_Wireless.Enabled = False
-        Me.m_Wireless.Font = New System.Drawing.Font("Roboto", 10.0!)
+        Me.m_Wireless.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!)
         Me.m_Wireless.Location = New System.Drawing.Point(17, 59)
         Me.m_Wireless.Margin = New System.Windows.Forms.Padding(0)
         Me.m_Wireless.MouseLocation = New System.Drawing.Point(-1, -1)
@@ -184,7 +189,7 @@ Partial Class Form1
         '
         Me.m_USB.AutoSize = True
         Me.m_USB.Depth = 0
-        Me.m_USB.Font = New System.Drawing.Font("Roboto", 10.0!)
+        Me.m_USB.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!)
         Me.m_USB.Location = New System.Drawing.Point(17, 29)
         Me.m_USB.Margin = New System.Windows.Forms.Padding(0)
         Me.m_USB.MouseLocation = New System.Drawing.Point(-1, -1)
@@ -204,9 +209,9 @@ Partial Class Form1
         Me.btnConnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnConnect.Font = New System.Drawing.Font("Microsoft Sans Serif", 16.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnConnect.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.btnConnect.Location = New System.Drawing.Point(189, 314)
+        Me.btnConnect.Location = New System.Drawing.Point(104, 314)
         Me.btnConnect.Name = "btnConnect"
-        Me.btnConnect.Size = New System.Drawing.Size(117, 51)
+        Me.btnConnect.Size = New System.Drawing.Size(147, 51)
         Me.btnConnect.TabIndex = 9
         Me.btnConnect.Text = "Connect"
         Me.btnConnect.UseVisualStyleBackColor = False
@@ -243,7 +248,7 @@ Partial Class Form1
         '
         Me.chkCrop.AutoSize = True
         Me.chkCrop.Depth = 0
-        Me.chkCrop.Font = New System.Drawing.Font("Roboto", 10.0!)
+        Me.chkCrop.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!)
         Me.chkCrop.Location = New System.Drawing.Point(153, 128)
         Me.chkCrop.Margin = New System.Windows.Forms.Padding(0)
         Me.chkCrop.MouseLocation = New System.Drawing.Point(-1, -1)
@@ -259,7 +264,7 @@ Partial Class Form1
         '
         Me.chkOntop.AutoSize = True
         Me.chkOntop.Depth = 0
-        Me.chkOntop.Font = New System.Drawing.Font("Roboto", 10.0!)
+        Me.chkOntop.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!)
         Me.chkOntop.Location = New System.Drawing.Point(269, 85)
         Me.chkOntop.Margin = New System.Windows.Forms.Padding(0)
         Me.chkOntop.MouseLocation = New System.Drawing.Point(-1, -1)
@@ -302,6 +307,7 @@ Partial Class Form1
         '
         'Setting
         '
+        Me.Setting.Controls.Add(Me.btnKill)
         Me.Setting.Controls.Add(Me.VersionLabel)
         Me.Setting.Controls.Add(Me.grpbHome)
         Me.Setting.Controls.Add(Me.btnConnect)
@@ -340,10 +346,10 @@ Partial Class Form1
         Me.dgvShortCuts.ReadOnly = True
         Me.dgvShortCuts.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None
         Me.dgvShortCuts.RowHeadersVisible = False
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.White
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black
-        Me.dgvShortCuts.RowsDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle10.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle10.SelectionBackColor = System.Drawing.Color.White
+        DataGridViewCellStyle10.SelectionForeColor = System.Drawing.Color.Black
+        Me.dgvShortCuts.RowsDefaultCellStyle = DataGridViewCellStyle10
         Me.dgvShortCuts.Size = New System.Drawing.Size(507, 397)
         Me.dgvShortCuts.TabIndex = 2
         '
@@ -361,6 +367,10 @@ Partial Class Form1
         '
         'About
         '
+        Me.About.Controls.Add(Me.MaterialLabel1)
+        Me.About.Controls.Add(Me.Lblmygit)
+        Me.About.Controls.Add(Me.Lblsource)
+        Me.About.Controls.Add(Me.PictureBox4)
         Me.About.Controls.Add(Me.PictureBox3)
         Me.About.Controls.Add(Me.PictureBox2)
         Me.About.Controls.Add(Me.PictureBox1)
@@ -371,39 +381,6 @@ Partial Class Form1
         Me.About.TabIndex = 2
         Me.About.Text = "About"
         Me.About.VerticalScrollbarBarColor = True
-        '
-        'PictureBox3
-        '
-        Me.PictureBox3.BackColor = System.Drawing.Color.White
-        Me.PictureBox3.Image = Global.scrcpy_giu.My.Resources.Resources.Inked36928228_LI
-        Me.PictureBox3.Location = New System.Drawing.Point(226, 140)
-        Me.PictureBox3.Name = "PictureBox3"
-        Me.PictureBox3.Size = New System.Drawing.Size(50, 50)
-        Me.PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox3.TabIndex = 6
-        Me.PictureBox3.TabStop = False
-        '
-        'PictureBox2
-        '
-        Me.PictureBox2.BackColor = System.Drawing.Color.White
-        Me.PictureBox2.Image = Global.scrcpy_giu.My.Resources.Resources.facebook_logo_button_1_
-        Me.PictureBox2.Location = New System.Drawing.Point(251, 196)
-        Me.PictureBox2.Name = "PictureBox2"
-        Me.PictureBox2.Size = New System.Drawing.Size(50, 50)
-        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox2.TabIndex = 5
-        Me.PictureBox2.TabStop = False
-        '
-        'PictureBox1
-        '
-        Me.PictureBox1.BackColor = System.Drawing.Color.White
-        Me.PictureBox1.Image = Global.scrcpy_giu.My.Resources.Resources.github_logo_1_
-        Me.PictureBox1.Location = New System.Drawing.Point(195, 196)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(50, 50)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox1.TabIndex = 4
-        Me.PictureBox1.TabStop = False
         '
         'Scrcpy
         '
@@ -423,6 +400,112 @@ Partial Class Form1
         Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(93, 22)
         Me.ExitToolStripMenuItem.Text = "Exit"
         '
+        'btnKill
+        '
+        Me.btnKill.BackColor = System.Drawing.Color.Red
+        Me.btnKill.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.btnKill.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnKill.Font = New System.Drawing.Font("Microsoft Sans Serif", 16.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnKill.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.btnKill.Location = New System.Drawing.Point(272, 314)
+        Me.btnKill.Name = "btnKill"
+        Me.btnKill.Size = New System.Drawing.Size(147, 51)
+        Me.btnKill.TabIndex = 12
+        Me.btnKill.Text = "Kill adb"
+        Me.btnKill.UseVisualStyleBackColor = False
+        '
+        'PictureBox4
+        '
+        Me.PictureBox4.BackColor = System.Drawing.Color.White
+        Me.PictureBox4.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.PictureBox4.Image = Global.scrcpy_gui.My.Resources.Resources.github_logo_1_
+        Me.PictureBox4.Location = New System.Drawing.Point(139, 257)
+        Me.PictureBox4.Name = "PictureBox4"
+        Me.PictureBox4.Size = New System.Drawing.Size(50, 50)
+        Me.PictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox4.TabIndex = 7
+        Me.PictureBox4.TabStop = False
+        '
+        'PictureBox3
+        '
+        Me.PictureBox3.BackColor = System.Drawing.Color.White
+        Me.PictureBox3.Image = Global.scrcpy_gui.My.Resources.Resources.Inked36928228_LI
+        Me.PictureBox3.Location = New System.Drawing.Point(139, 57)
+        Me.PictureBox3.Name = "PictureBox3"
+        Me.PictureBox3.Size = New System.Drawing.Size(50, 50)
+        Me.PictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox3.TabIndex = 6
+        Me.PictureBox3.TabStop = False
+        '
+        'PictureBox2
+        '
+        Me.PictureBox2.BackColor = System.Drawing.Color.White
+        Me.PictureBox2.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.PictureBox2.Image = Global.scrcpy_gui.My.Resources.Resources.facebook_logo_button_1_
+        Me.PictureBox2.Location = New System.Drawing.Point(139, 195)
+        Me.PictureBox2.Name = "PictureBox2"
+        Me.PictureBox2.Size = New System.Drawing.Size(50, 50)
+        Me.PictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox2.TabIndex = 5
+        Me.PictureBox2.TabStop = False
+        '
+        'PictureBox1
+        '
+        Me.PictureBox1.BackColor = System.Drawing.Color.White
+        Me.PictureBox1.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.PictureBox1.Image = Global.scrcpy_gui.My.Resources.Resources.github_logo_1_
+        Me.PictureBox1.Location = New System.Drawing.Point(139, 130)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(50, 50)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox1.TabIndex = 4
+        Me.PictureBox1.TabStop = False
+        '
+        'Lblsource
+        '
+        Me.Lblsource.AutoSize = True
+        Me.Lblsource.BackColor = System.Drawing.Color.White
+        Me.Lblsource.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.Lblsource.Depth = 0
+        Me.Lblsource.Font = New System.Drawing.Font("Roboto", 11.0!)
+        Me.Lblsource.ForeColor = System.Drawing.Color.FromArgb(CType(CType(222, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.Lblsource.Location = New System.Drawing.Point(206, 275)
+        Me.Lblsource.MouseState = MaterialSkin.MouseState.HOVER
+        Me.Lblsource.Name = "Lblsource"
+        Me.Lblsource.Size = New System.Drawing.Size(155, 19)
+        Me.Lblsource.TabIndex = 8
+        Me.Lblsource.Text = "Official scrcpy source"
+        '
+        'Lblmygit
+        '
+        Me.Lblmygit.AutoSize = True
+        Me.Lblmygit.BackColor = System.Drawing.Color.White
+        Me.Lblmygit.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.Lblmygit.Depth = 0
+        Me.Lblmygit.Font = New System.Drawing.Font("Roboto", 11.0!)
+        Me.Lblmygit.ForeColor = System.Drawing.Color.FromArgb(CType(CType(222, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.Lblmygit.Location = New System.Drawing.Point(206, 146)
+        Me.Lblmygit.MouseState = MaterialSkin.MouseState.HOVER
+        Me.Lblmygit.Name = "Lblmygit"
+        Me.Lblmygit.Size = New System.Drawing.Size(74, 19)
+        Me.Lblmygit.TabIndex = 9
+        Me.Lblmygit.Text = "My github"
+        '
+        'MaterialLabel1
+        '
+        Me.MaterialLabel1.AutoSize = True
+        Me.MaterialLabel1.BackColor = System.Drawing.Color.White
+        Me.MaterialLabel1.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.MaterialLabel1.Depth = 0
+        Me.MaterialLabel1.Font = New System.Drawing.Font("Roboto", 11.0!)
+        Me.MaterialLabel1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(222, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.MaterialLabel1.Location = New System.Drawing.Point(206, 212)
+        Me.MaterialLabel1.MouseState = MaterialSkin.MouseState.HOVER
+        Me.MaterialLabel1.Name = "MaterialLabel1"
+        Me.MaterialLabel1.Size = New System.Drawing.Size(154, 19)
+        Me.MaterialLabel1.TabIndex = 10
+        Me.MaterialLabel1.Text = "My facebook account"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -432,8 +515,9 @@ Partial Class Form1
         Me.Controls.Add(Me.MetroTabControl1)
         Me.Controls.Add(Me.top_pa)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "Form1"
-        Me.Text = "Form1"
+        Me.Text = "Scrcpy Gui"
         Me.top_pa.ResumeLayout(False)
         Me.top_pa.PerformLayout()
         Me.GroupBox1.ResumeLayout(False)
@@ -446,10 +530,12 @@ Partial Class Form1
         Me.Howto.ResumeLayout(False)
         CType(Me.dgvShortCuts, System.ComponentModel.ISupportInitialize).EndInit()
         Me.About.ResumeLayout(False)
+        Me.About.PerformLayout()
+        Me.ctxTray.ResumeLayout(False)
+        CType(Me.PictureBox4, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ctxTray.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -483,4 +569,9 @@ Partial Class Form1
     Public WithEvents Scrcpy As NotifyIcon
     Friend WithEvents ctxTray As ContextMenuStrip
     Friend WithEvents ExitToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents btnKill As Button
+    Friend WithEvents PictureBox4 As PictureBox
+    Friend WithEvents Lblsource As MaterialSkin.Controls.MaterialLabel
+    Friend WithEvents Lblmygit As MaterialSkin.Controls.MaterialLabel
+    Friend WithEvents MaterialLabel1 As MaterialSkin.Controls.MaterialLabel
 End Class
