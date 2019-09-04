@@ -1,14 +1,27 @@
-﻿Public Class Form1
+﻿Imports System.ComponentModel
+Public Class Form1
 
     Dim drag As Boolean
     Dim mousex As Integer
     Dim mousey As Integer
     Dim Process As New Process()
     Dim Process_Info As New ProcessStartInfo()
-    Dim path As String = "scrcpy-win64"
+    Dim pFFMPEG As New Process()
+    Dim pFFMPEG_Info As New ProcessStartInfo()
+    Dim p1() As Process
+    Dim path As String = AppDomain.CurrentDomain.BaseDirectory + "scrcpy-win64"
+    Dim path_ffmpeg As String = AppDomain.CurrentDomain.BaseDirectory + "bin"
+    Dim lversion As String = "Alpha Build 0.3 04/09/2019"
 
-    Private Sub Top_pa_Paint(sender As Object, e As PaintEventArgs) Handles top_pa.Paint
+    Public Sub New()
 
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+
+        BackgroundWorker1.WorkerReportsProgress = True
+        BackgroundWorker1.WorkerSupportsCancellation = True
     End Sub
 
     Private Sub Top_pa_MouseMove(sender As Object, e As MouseEventArgs) Handles top_pa.MouseMove
@@ -29,7 +42,10 @@
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        kill_process()
+        Kill_process()
+        If BackgroundWorker1.WorkerSupportsCancellation = True Then
+            BackgroundWorker1.CancelAsync()
+        End If
         Me.Close()
     End Sub
 
@@ -37,9 +53,27 @@
 
     End Sub
 
+    Sub btn_to_disable()
+        btnConnect.Text = "Disconnect"
+        btnConnect.BackColor = Color.FromArgb(255, 128, 128)
+        btnConnect.ForeColor = Color.FromArgb(255, 0, 0)
+        btnConnect.FlatAppearance.BorderColor = Color.FromArgb(255, 0, 0)
+    End Sub
+    Sub btn_to_enable()
+        lblStat.Text = "Connect " + Str(0)
+        btnConnect.Text = "Disconnect"
+        btnConnect.BackColor = Color.FromArgb(255, 128, 128)
+        btnConnect.ForeColor = Color.FromArgb(255, 0, 0)
+        btnConnect.FlatAppearance.BorderColor = Color.FromArgb(255, 0, 0)
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        VersionLabel.Text = "Alpha Build 0.2 04/08/2019"
+        If BackgroundWorker1.IsBusy <> True Then
+            BackgroundWorker1.RunWorkerAsync()
+        End If
+
+        VersionLabel.Text = lversion
         cmbBitrate.SelectedIndex = 0
         m_USB.Checked = False
         dgvShortCuts.Columns(0).Width = 388 / 1.4
@@ -85,8 +119,14 @@
     End Sub
 
     Private Sub BtnConnect_Click_1(sender As Object, e As EventArgs) Handles btnConnect.Click
-        Dim str As String() = adb("/c adb shell getprop ro.product.model & adb shell getprop ro.build.version.sdk").Split(vbLf)
-        If (str(0) <> Nothing) Then
+        If (Not m_USB.Checked And Not m_Wireless.Checked) Then
+            MessageBox.Show("Please Select Mode", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return
+        End If
+        Dim str As String() = Adb("/c adb shell getprop ro.product.model & adb shell getprop ro.build.version.sdk").Split(vbLf)
+        Dim devicename As String = str(0)
+        Dim apilevel As Integer = Convert.ToInt32(str(1))
+        If (devicename <> Nothing And apilevel >= 25) Then
             If (btnConnect.Text = "Connect") Then
                 Dim msg As String = "/c scrcpy "
                 If (chkScreen_Off.Checked) Then
@@ -105,51 +145,33 @@
                     End If
 
                 End If
-                If (Not m_USB.Checked And Not m_Wireless.Checked) Then
-                    msg = "Please Select Mode"
-                    MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Return
-                End If
 
                 If (cmbBitrate.SelectedIndex > -1) Then
                     msg += "-b " + cmbBitrate.Text.TrimEnd("B")
                 End If
                 'MessageBox.Show(msg)
                 If (m_USB.Checked) Then
-                    adb("/c adb usb")
-                    adb("/c adb kill-server")
+                    Adb("/c adb usb")
+                    Adb("/c adb kill-server")
                 ElseIf (m_Wireless.Checked) Then
-                    adb("/c adb kill-server")
-                    Dim ip As String = getIP()
-                    adb("/c adb tcpip 5555")
-                    MessageBox.Show(adb("/c adb connect " & ip & ":5555") + vbCrLf + "Please Unplug USB then press OK", "Please Unplug USB", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    Adb("/c adb kill-server")
+                    Dim ip As String = GetIP()
+                    Adb("/c adb tcpip 5555")
+                    MessageBox.Show(Adb("/c adb connect " & ip & ":5555") + vbCrLf + "Please Unplug USB then press OK", "Please Unplug USB", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 End If
-                Process_Info.FileName = "cmd.exe"
-                Process_Info.Arguments = msg
-                Process_Info.WorkingDirectory = path
-                Process_Info.CreateNoWindow = True
-                Process_Info.UseShellExecute = False
-                Process_Info.RedirectStandardOutput = True
-                Process_Info.RedirectStandardError = True
-                Process.EnableRaisingEvents = True
-                Process.StartInfo = Process_Info
-                Process.Start()
+
+                Start_Process(msg)
 
                 grpbHome.Enabled = False
-                lblStat.Text = "Connect " + str(0)
-                btnConnect.Text = "Disconnect"
-                btnConnect.BackColor = Color.FromArgb(255, 128, 128)
-                btnConnect.ForeColor = Color.FromArgb(255, 0, 0)
-                btnConnect.FlatAppearance.BorderColor = Color.FromArgb(255, 0, 0)
+                lblStat.Text = "Connect " + devicename
+                btn_to_disable()
 
             Else
-                btnConnect.Text = "Connect"
-                btnConnect.BackColor = Color.FromArgb(128, 255, 128)
-                btnConnect.ForeColor = Color.FromArgb(0, 192, 0)
-                btnConnect.FlatAppearance.BorderColor = Color.FromArgb(0, 192, 0)
+                btn_to_enable()
                 grpbHome.Enabled = True
-                kill_process()
                 lblStat.Text = ""
+                Kill_process()
+
             End If
 
         Else
@@ -157,10 +179,9 @@
         End If
     End Sub
 
-    Function Kill_process()
-        Process.Close()
+    Sub Kill_process()
         For Each p As Process In Process.GetProcesses
-            If p.ProcessName = "scrcpy" Or p.ProcessName = "adb" Then
+            If p.ProcessName = "scrcpy" Or p.ProcessName = "adb" Or p.ProcessName = "ffmpeg" Then
                 Try
                     p.Kill()
                 Catch ex As Exception
@@ -168,7 +189,20 @@
                 End Try
             End If
         Next
-    End Function
+    End Sub
+
+    Sub Start_Process(ByVal msg As String)
+        Process_Info.FileName = "cmd.exe"
+        Process_Info.Arguments = msg
+        Process_Info.WorkingDirectory = path
+        Process_Info.CreateNoWindow = True
+        Process_Info.UseShellExecute = False
+        Process_Info.RedirectStandardOutput = True
+        Process_Info.RedirectStandardError = True
+        Process.EnableRaisingEvents = True
+        Process.StartInfo = Process_Info
+        Process.Start()
+    End Sub
 
 
     Function Adb(ByVal Arguments As String) As String
@@ -203,10 +237,10 @@
         Dim msg As String() = Adb("/c adb shell ip route").Split(vbLf)
         Dim ip_dummy As String() = msg(0).Split(" ")
         Dim ip As String = ip_dummy(ip_dummy.Length - 2)
-        Dim a As String
-        For Each i In ip_dummy
-            a += "->" + i + vbCrLf
-        Next
+        'Dim a As String = ""
+        'For Each i In ip_dummy
+        '    a += "->" + i + vbCrLf
+        'Next
         'MessageBox.Show(ip)
         'Dim ip As String = ip_dummy(8)
         Return ip
@@ -247,12 +281,12 @@
     End Sub
 
     Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
-        kill_process()
+        Kill_process()
         Me.Close()
     End Sub
 
     Private Sub BtnKill_Click(sender As Object, e As EventArgs) Handles btnKill.Click
-        kill_process()
+        Kill_process()
     End Sub
 
     Private Sub Lblsource_Click(sender As Object, e As EventArgs) Handles Lblsource.Click
@@ -270,4 +304,94 @@
     Private Sub MaterialLabel1_Click(sender As Object, e As EventArgs) Handles MaterialLabel1.Click
         Process.Start("https://facebook.com/meng.anantasak")
     End Sub
+
+    Private Sub BackgroundWorker1_DoWork(sender As Object, e As DoWorkEventArgs) Handles BackgroundWorker1.DoWork
+        Dim w As BackgroundWorker = CType(sender, BackgroundWorker)
+        While True
+            If w.CancellationPending = True Then
+                e.Cancel = True
+                Exit While
+            Else
+                p1 = Process.GetProcessesByName("scrcpy")
+
+                If p1.Count > 0 Then
+                    w.ReportProgress(1, "Running")
+                Else
+                    w.ReportProgress(1, "Not Running")
+                End If
+            End If
+            System.Threading.Thread.Sleep(1000)
+        End While
+    End Sub
+
+    Private Sub BackgroundWorker1_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BackgroundWorker1.ProgressChanged
+        If e.UserState = "Running" Then
+            btnConnect.Text = "Disconnect"
+            btnConnect.BackColor = Color.FromArgb(255, 128, 128)
+            btnConnect.ForeColor = Color.FromArgb(255, 0, 0)
+            btnConnect.FlatAppearance.BorderColor = Color.FromArgb(255, 0, 0)
+        ElseIf e.UserState = "Not Running" Then
+            btnConnect.Text = "Connect"
+            btnConnect.BackColor = Color.FromArgb(128, 255, 128)
+            btnConnect.ForeColor = Color.FromArgb(0, 192, 0)
+            btnConnect.FlatAppearance.BorderColor = Color.FromArgb(0, 192, 0)
+        End If
+    End Sub
+
+    Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
+
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles btnRec.Click
+        pFFMPEG = New Process()
+        pFFMPEG_Info = New ProcessStartInfo()
+        If (btnRec.Text = "Record") Then
+            Dim p2 As Process
+            Dim wtname, salt_date, args, file_type As String
+            file_type = ".mkv"
+            Dim dic As String = AppDomain.CurrentDomain.BaseDirectory
+            Debug.WriteLine(dic)
+            salt_date = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")
+            Debug.WriteLine(salt_date)
+            For Each p2 In Process.GetProcessesByName("scrcpy")
+                'Debug.WriteLine(p2.MainWindowTitle.ToString)
+                wtname = p2.MainWindowTitle.ToString
+            Next
+            If wtname Is Nothing Then
+                Debug.WriteLine("Emty")
+                Exit Sub
+            End If
+            args = "/c ffmpeg -f gdigrab -framerate 25 -i title=""" & wtname & """" + " " + """" & dic + "record\" + wtname.Replace(" ", "") + salt_date + file_type & """"
+
+            Debug.WriteLine(args)
+            pFFMPEG_Info.FileName = "cmd.exe"
+            pFFMPEG_Info.Arguments = args
+            pFFMPEG_Info.WorkingDirectory = path_ffmpeg
+            pFFMPEG_Info.CreateNoWindow = True
+            pFFMPEG_Info.UseShellExecute = False
+            pFFMPEG_Info.RedirectStandardInput = True
+            pFFMPEG_Info.RedirectStandardOutput = False
+            pFFMPEG_Info.RedirectStandardError = False
+
+            pFFMPEG.EnableRaisingEvents = False
+            pFFMPEG.StartInfo = pFFMPEG_Info
+            pFFMPEG.Start()
+            btnRec.Text = "Stop"
+        ElseIf btnRec.Text = "Stop" Then
+            Dim pProcess() As Process = Process.GetProcesses
+            For Each p As Process In pProcess
+                If p.ProcessName = "ffmpeg" Then
+                    p.WaitForExit(1000)
+                    If Not p.HasExited Then
+                        'The process did not close itself so force it to close.
+                        p.Kill()
+                    End If
+                    'Dispose the Process object, which is different to closing the running process.
+                    p.Close()
+                End If
+            Next
+            btnRec.Text = "Record"
+        End If
+    End Sub
+
 End Class
